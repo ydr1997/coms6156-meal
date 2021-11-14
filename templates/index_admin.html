@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>NBA Stats Online</title>
+    <style>
+      body{
+        font-size: 15pt;
+        font-family: arial, sans-serif;
+      }
+
+      table, th, td{
+        border: 1px solid black;
+        font-size: smaller;
+      }
+
+      th, td{
+        padding: 5px;
+      }
+
+      .container{
+        width: 100%
+      }
+
+      .info-block{
+        display: inline-block;
+        padding-right: 10px;
+        padding-left: 10px;
+        float: left;
+      }
+
+      h5{
+        margin-bottom: 10px;
+        margin-top: 10px;
+      }
+
+      form{
+        padding: 5px;
+        border: 2px;
+      }
+
+      ul{
+        font-size: smaller;
+        padding-left: 20px;
+      }
+
+      .delete-link{
+        color: #d30d17;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>NBA Stats Online</h1>
+    <hr/>
+
+    <h5>Add a coach</h5>
+    <form method="POST" action="/add-coach">
+      <label for="coach_number">Coach Number:
+        <input type="number" name="coach_number"/>
+      </label>
+      <label for="coach_name">Coach Name:
+        <input type="text" name="coach_name"/>
+      </label>
+      <br/>
+
+      <label for="win">Wins:
+        <input type="number" name="win"/>
+      </label>
+      <label for="lose">Loses:
+        <input type="number" name="lose">
+      </label>
+      <br/>
+
+      <label for="champion">Champions:
+        <input type="number" name="champion"/>
+      </label>
+      <label for="years">Years:
+        <input type="number" name="years"/>
+      </label>
+      <label for="age">Age:
+        <input type="number" name="age"/>
+      </label>
+      <br/>
+
+      <input type="submit" value="Add Coach">
+    </form>
+
+    <h5>Add a player</h5>
+    <form method="POST" action="/add-player">
+      <label for="player_number">Player Number:
+      <input type="text" name="player_number"/></label>
+      <label for="player_name">Player Name:
+      <input type="text" name="player_name"/></label>
+      <br/>
+      <label for="BLK">BLK:
+      <input type="number" name="BLK"/></label>
+      <label for="STL">STL:
+      <input type="number" name="STL"/></label>
+      <br/>
+      <label for="AST">AST:
+      <input type="number" name="AST"/></label>
+       <label for="PTS">PTS:
+      <input type="number" name="PTS"/></label>
+      <br/>
+      <label for="AGE">AGE:
+      <input type="number" name="AGE"/></label>
+      <label for="POSITION">POSITION:
+      <input type="text" name="POSITION"/></label>
+      <br/>
+      <input type="submit" value="Add Player"/>
+    </form>
+
+    <h5>Add a manager</h5>
+    <form method="POST" action="/add-manager">
+      <label for="manager_number">Manager Number:
+        <input type="number" name="manager_number"/>
+      </label>
+      <label for="manager_name">Manager Name:
+        <input type="text" name="manager_name"/>
+      </label>
+      <br/>
+
+      <label for="age">Age:
+        <input type="number" name="age"/>
+      </label>
+      <label for="salary">Salary:
+        <input type="text" name="salary"/>
+      </label>
+      <br/>
+      <input type="submit" value="Add Manager"/>
+    </form>
+
+    <h5>Add a team</h5>
+    <form method="POST" action="/add-team">
+      <label for="team_name">Team Name:
+        <input type="text" name="team_name"/>
+      </label>
+      <label for="champion">Champion:
+        <input type="number" name="champion"/>
+      </label>
+      <br/>
+
+      <label for="win">Wins:
+        <input type="number" name="win"/>
+      </label>
+      <label for="lose">Loses:
+        <input type="number" name="lose"/>
+      </label>
+      <br/>
+
+      <label for="start_time">Start Time:
+        <input type="text" name="start_time"/>
+      </label>
+      <label for="end_time">Start Time:
+        <input type="text" name="end_time"/>
+      </label>
+      <br/>
+      <input type="submit" value="Add Team">
+    </form>
+
+    <h5>Add a game record</h5>
+    <form method="POST" action="/add-score">
+      <label for="game_day">Game Day:
+        <input type="date" name="game_day">
+      </label>
+      <label for="home_team">Home Team:
+        <input type="text" name="home_team">
+      </label>
+      <label for="away_team">Away Team:
+        <input type="text" name="away_team">
+      </label>
+      <label for="competition_score">Competition Score:
+        <input type="text" name="competition_score">
+      </label>
+      <br/>
+      <input type="submit" value="Add Record">
+    </form>
+
+  <div class="container">
+    <div class="info-block">
+      <h5>Coach Info</h5>
+      <table>
+        <tr>
+          <th><strong>Coach Name</strong></th>
+        </tr>
+        {% for j in coach_names %}
+          <tr>
+            <td><a href="coach-detail?name={{j}}">{{j}}</a>
+              (<a class="delete-link" href="delete-info?name={{ j }}&type=coach">delete</a>)</td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+    <div class="info-block">
+      <h5>Player Info</h5>
+      <table>
+        <tr>
+          <th><strong>Player Name</strong></th>
+        </tr>
+        {% for j in player_names %}
+          <tr>
+            <td><a href="player-detail?name={{j}}">{{j}}</a>
+              (<a class="delete-link" href="delete-info?name={{ j }}&type=player">delete</a>)</td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+    <div class="info-block">
+      <h5>Manager Info</h5>
+      <table>
+        <tr>
+          <th><strong>Manager Name</strong></th>
+        </tr>
+        {% for j in manager_names %}
+          <tr>
+            <td><a href="manager-detail?name={{j}}">{{j}}</a>
+            (<a class="delete-link" href="delete-info?name={{ j }}&type=manager">delete</a>)</td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <div class="info-block">
+      <h5>Team Info</h5>
+      <table>
+        <tr>
+          <th><strong>Team Name</strong></th>
+        </tr>
+        {% for j in team_names %}
+          <tr>
+            <td><a href="team-detail?name={{j}}"> {{j}}</a>
+            (<a class="delete-link" href="delete-info?name={{ j }}&type=team">delete</a>)</td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <div class="info-block">
+      <h5>Recent Game Records</h5>
+      <ul>
+        {% for r in score_records %}
+          <li style="padding-bottom: 10px">
+            <strong>{{ r[0] }}</strong>
+            {{ r['home_team'] }} : {{ r['away_team'] }} {{ r['competition_score'] }}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  </body>
+</html>

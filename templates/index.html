@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>NBA Stats Online</title>
+    <style>
+      body{
+        font-size: 15pt;
+        font-family: arial, sans-serif;
+      }
+
+      table, th, td{
+        border: 1px solid black;
+        font-size: smaller;
+      }
+
+      th, td{
+        padding: 5px;
+      }
+
+      .container{
+        width: 100%
+      }
+
+      .info-block{
+        display: inline-block;
+        padding-right: 10px;
+        padding-left: 10px;
+        float: left;
+      }
+
+      h5{
+        margin-bottom: 10px;
+        margin-top: 10px;
+      }
+
+      form{
+        padding: 5px;
+        border: 2px;
+        font-size: smaller;
+      }
+
+      ul{
+        font-size: smaller;
+        padding-left: 20px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>NBA Stats Online</h1>
+    <hr/>
+
+    <form method="POST" action="/login">
+      <label for="username">Username:</label>
+      <input type="text" name="username">
+      <label for="password">Password:</label>
+      <input type="password" name="password">
+      <input type="submit" value="Login">
+     </form>
+
+
+    <form method="POST" action="/search">
+      <label for="pname">type in a name to search:</label>
+      <input type="text" name="pname">
+      <label for="type">type:</label>
+      <select name="type" id="type">
+        <option value="coach">coach</option>
+        <option value="player">player</option>
+        <option value="manager">manager</option>
+        <option value="team">team</option>
+      </select>
+      <input type="submit" value="search">
+    </form>
+
+  <div class="container">
+    <div class="info-block">
+      <h5>Coach Info</h5>
+      <table>
+        <tr>
+          <th><strong>Coach Name</strong></th>
+        </tr>
+        {% for j in coach_names %}
+          <tr>
+            <td><a href="coach-detail?name={{j}}">{{j}}</a></td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+    <div class="info-block">
+        <h5>Player Info</h5>
+        <table>
+          <tr>
+            <th><strong>Player Name</strong></th>
+          </tr>
+          {% for j in player_names %}
+            <tr>
+              <td><a href="player-detail?name={{j}}">{{j}}</a></td>
+            </tr>
+          {% endfor %}
+        </table>
+    </div>
+    <div class="info-block">
+      <h5>Manager Info</h5>
+      <table>
+        <tr>
+          <th><strong>Manager Name</strong></th>
+        </tr>
+        {% for j in manager_names %}
+          <tr>
+            <td><a href="manager-detail?name={{j}}">{{j}}</a></td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <div class="info-block">
+      <h5>Team Info</h5>
+      <table>
+        <tr>
+          <th><strong>Team Name</strong></th>
+        </tr>
+        {% for j in team_names %}
+          <tr>
+            <td><a href="team-detail?name={{j}}">{{j}}</a></td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <div class="info-block">
+      <h5>Recent Game Records</h5>
+      <ul>
+        {% for r in score_records %}
+          <li style="padding-bottom: 10px">
+            <strong>{{ r[0] }}</strong>
+            {{ r['home_team'] }} : {{ r['away_team'] }} {{ r['competition_score'] }}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  </body>
+</html>

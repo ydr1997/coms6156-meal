@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Detailed Info</title>
+    <style>
+      body{
+        font-size: 15pt;
+        font-family: arial, sans-serif;
+      }
+
+      ul{
+        list-style-type: none;
+        padding-left: 20px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>NBA Stats Online</h1>
+    <hr/>
+
+    <h2>{{ basic_info[1] }}</h2>
+    <ul>
+      <li>Id: {{ basic_info[0] }}</li>
+      <li>Name: {{ basic_info[1] }}</li>
+      <li>Age: {{ basic_info[2] }}</li>
+      <li>Salary: {{ basic_info[3] }}</li>
+
+      <br/>
+      <li>Manage team:
+        {% for t in manage_team %}
+          <br/>
+          <span style="padding-left: 20px">{{ t }} </span>
+        {% else %}
+          none
+        {% endfor %}
+      </li>
+
+
+
+    </ul>
+    <a href="/">return to home</a>
+  </body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+    <style>
+      body{
+        font-size: 15pt;
+        font-family: arial, sans-serif;
+      }
+
+      table, th, td{
+        border: 1px solid black;
+      }
+
+      th, td{
+        padding: 5px;
+      }
+
+      .container{
+        width: 100%
+      }
+
+      .info-block{
+        display: inline-block;
+        padding-right: 20px;
+      }
+
+      h5{
+        margin-bottom: 10px;
+        margin-top: 10px;
+      }
+
+      form{
+        padding: 5px;
+        border: 2px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>NBA Stats Online</h1>
+    <hr/>
+
+    <form method="POST" action="/search">
+      <label for="pname">type in a name to search:</label>
+      <input type="text" name="pname">
+      <label for="type">type:</label>
+      <select name="type" id="type">
+        <option value="coach">coach</option>
+        <option value="player">player</option>
+        <option value="manager">manager</option>
+        <option value="team">team</option>
+      </select>
+      <input type="submit" value="search">
+    </form>
+
+    <div class="container">
+      <div class="info-block">
+        <h5>Results in "{{ search_type }}" table:</h5>
+        <table>
+          {% for n in data %}
+            <tr>
+              <td><a href="/{{ search_type }}-detail?name={{ n }}">{{n}}</a></td>
+            </tr>
+          {% else %}
+            <span>no results found</span>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
+

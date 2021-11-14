@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Detailed Info</title>
+    <style>
+      body{
+        font-size: 15pt;
+        font-family: arial, sans-serif;
+      }
+
+      ul{
+        list-style-type: none;
+        padding-left: 20px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>NBA Stats Online</h1>
+    <hr/>
+
+    <h2>{{ basic_info[1] }}</h2>
+    <ul>
+      <li>Id: {{ basic_info[0] }}</li>
+      <li>Name: {{ basic_info[1] }}</li>
+      <li># of wins: {{ basic_info[2] }}</li>
+      <li># of loses: {{ basic_info[3] }}</li>
+      <li>Champions: {{ basic_info[4] }}</li>
+      <li>Years of coaching: {{ basic_info[5] }}</li>
+      <li>Age: {{ basic_info[6] }}</li>
+
+      <br/>
+      <li>Coaching players:
+        {% for p in players %}
+          <br/>
+          <span style="padding-left: 20px">{{ p }} </span>
+        {% endfor %}
+      </li>
+
+      <br/>
+      <li>Current team:
+        {% for t in teams %}
+          <br/>
+          <span style="padding-left: 20px">{{ t }} </span>
+        {% else %}
+          none
+        {% endfor %}
+      </li>
+    </ul>
+    <a href="/">return to home</a>
+  </body>
+</html>

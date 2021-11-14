@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Detailed Info</title>
+    <style>
+      body{
+        font-size: 15pt;
+        font-family: arial, sans-serif;
+      }
+
+      ul{
+        list-style-type: none;
+        padding-left: 20px;
+      }
+
+      table, th, td{
+        border: 1px solid black;
+      }
+
+      table{
+        margin-left: 20px;
+      }
+
+      th, td{
+        padding: 2px;
+        font-weight: initial;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>NBA Stats Online</h1>
+    <hr/>
+
+    <h2>{{ basic_info[0] }}</h2>
+    <ul>
+      <li>Champion: {{ basic_info[1] }}</li>
+      <li>Win: {{ basic_info[2] }}</li>
+      <li>Lose: {{ basic_info[3] }}</li>
+      <li>Start Time: {{ basic_info[4] }}</li>
+      <li>End Time: {{ basic_info[5] }}</li>
+
+      <br/>
+      <li>Coach:
+        {% for t in coach_info %}
+          <br/>
+          <span style="padding-left: 20px">{{ t }} </span>
+        {% else %}
+          none
+        {% endfor %}
+      </li>
+      <li>Player:
+        {% for t in player_info %}
+          <br/>
+          <span style="padding-left: 20px">{{ t }} </span>
+        {% else %}
+          none
+        {% endfor %}
+      </li>
+
+      <br/>
+      <li>Area name:
+        {% for t in area_name %}
+          <br/>
+          <span style="padding-left: 20px">{{ t }} </span>
+        {% else %}
+          none
+        {% endfor %}
+      </li>
+      <li>Area rank:
+        {% for t in area_rank %}
+          <br/>
+          <span style="padding-left: 20px">{{ t }} </span>
+        {% else %}
+          none
+        {% endfor %}
+      </li>
+
+      <br/>
+      <li>Recent games:
+        <ul>
+          {% for r in score_records %}
+            <li>[{{ r[0] }}] {{ r['home_team'] }} : {{ r['away_team'] }} {{ r['competition_score'] }}</li>
+          {% endfor %}
+        </ul>
+      </li>
+
+      <br/>
+      <li>Draft info:
+        <table>
+          <tr><th>round</th>
+          <th>sequence</th></tr>
+          {% for d in draft_info %}
+            <tr><td>{{ d[0] }}</td>
+            <td>{{ d[1] }}</td></tr>
+          {% endfor %}
+        </table>
+      </li>
+    </ul>
+    <a href="/">return to home</a>
+  </body>
+</html>
