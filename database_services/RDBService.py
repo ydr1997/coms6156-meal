@@ -40,6 +40,24 @@ def get_by_prefix(db_schema, table_name, column_name, value_prefix):
     return res
 
 
+def get_all( ):
+
+    conn = _get_db_connection()
+    cur = conn.cursor()
+
+
+    sql = "select * from " + "ec2_lookmeal" + "." + "make_team"
+
+    print("SQL Statement = " + cur.mogrify(sql, None))
+
+    res = cur.execute(sql)
+    res = cur.fetchall()
+
+    conn.close()
+
+    return res
+
+
 
 
 def _get_where_clause_args(template):
