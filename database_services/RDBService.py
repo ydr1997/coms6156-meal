@@ -40,22 +40,7 @@ def get_by_prefix(db_schema, table_name, column_name, value_prefix):
     return res
 
 
-def get_all( ):
 
-    conn = _get_db_connection()
-    cur = conn.cursor()
-
-
-    sql = "select * from " + "ec2_lookmeal" + "." + "make_team"
-
-    print("SQL Statement = " + cur.mogrify(sql, None))
-
-    res = cur.execute(sql)
-    res = cur.fetchall()
-
-    conn.close()
-
-    return res
 
 
 
@@ -95,3 +80,81 @@ def find_by_template(db_schema, table_name, template, field_list):
 
     return res
 
+
+def get_mealsfromid(meals_id):
+
+    conn = _get_db_connection()
+    cur = conn.cursor()
+
+    mm =  "meal_information"
+    # print(meals_id)
+
+    # sql = "select * from " + "ec2_lookmeal" + "." + "meal_information" + "WHERE ID = (" + meals_id
+
+    sql = "select * from " + "ec2_lookmeal" + "." + mm + " " + "where id = " + meals_id
+
+    print("SQL Statement = " + cur.mogrify(sql, None))
+
+    res = cur.execute(sql)
+    res = cur.fetchall()
+
+    conn.close()
+
+    return res
+
+def get_all( ):
+
+    conn = _get_db_connection()
+    cur = conn.cursor()
+
+
+    sql = "select * from " + "ec2_lookmeal" + "." + "make_team"
+
+    print("SQL Statement = " + cur.mogrify(sql, None))
+
+    res = cur.execute(sql)
+    res = cur.fetchall()
+
+    conn.close()
+
+    return res
+
+def meals_delete_id(meals_id):
+    conn = _get_db_connection()
+    cur = conn.cursor()
+
+
+
+    sql = "Delete from ec2_lookmeal.meal_information where id=" + meals_id
+
+    print("SQL Statement = " + cur.mogrify(sql, None))
+
+
+
+    res = cur.execute(sql)
+    res = cur.fetchall()
+    conn.commit()
+
+    conn.close()
+
+    return res
+
+def add_meals():
+    conn = _get_db_connection()
+    cur = conn.cursor()
+
+    sql = "INSERT INTO " + "ec2_lookmeal" + "." + "meal_information" + " (id,creator,location,restaurant,max_number,current_number) VALUES (%s,%s, %s, %s, %s, %s)"
+    # sql = "Insert into " + db_schema + "." + table_name + " (ID, firstName, lastName, email, addressID) VALUES (" + id + ",'" + firstName + "','" + lastName + "','" + email + "'," + addressID + ")"
+    print("SQL Statement = " + cur.mogrify(sql, None))
+
+
+
+
+    res = cur.execute(sql,(11111, 'try', '11111st', 'temprestaurant', 1000, 555))
+    res = cur.fetchall()
+
+    conn.commit()
+
+    conn.close()
+
+    return res

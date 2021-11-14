@@ -41,14 +41,20 @@ CORS(app)
 
 @app.route('/trytemplate')
 def try_template():
-    data = request.form
-    tasks = {
-        'ID': data.get('ID'),
-        'firstName': data.get('firstName'),
-        'lastName': data.get('lastName'),
-        'email': data.get('email'),
-        'addressID': data.get('addressID')
-    }
+    # data = request.form
+    # tasks = {
+    #     'ID': data.get('ID'),
+    #     'firstName': data.get('firstName'),
+    #     'lastName': data.get('lastName'),
+    #     'email': data.get('email'),
+    #     'addressID': data.get('addressID')
+    # }
+
+
+
+
+
+    #
     # if tasks["ID"] is None or tasks["firstName"] is None or tasks["lastName"] is None or tasks["email"] is None or \
     #         tasks["addressID"] is None:
     #     rsp = Response(json.dumps(None), status=400, content_type="application/json")
@@ -96,6 +102,24 @@ def getss_by_prefix( table_name, column_name, prefix):
 def getsss_by_prefix():
     db_schema = "ec2_lookmeal"
     res = d_service.get_all()
+    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+    return rsp
+
+@app.route('/meals/<meals_id>')         #####根据meals_id查找
+def get_meals_fromid(meals_id):
+    res = d_service.get_mealsfromid(meals_id)
+    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+    return rsp
+
+@app.route('/meals/delete/<meals_id>')         #####根据meals_id查找
+def delete_meals(meals_id):
+    res = d_service.meals_delete_id(meals_id)
+    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+    return rsp
+
+@app.route('/meals/add')         #####添加meals信息
+def add_meals():
+    res = d_service.add_meals()
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
 
