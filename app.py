@@ -117,15 +117,31 @@ def delete_meals(meals_id):
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
 
-@app.route('/meals/add')         #####添加meals信息
-def add_meals():
-    res = d_service.add_meals()
+@app.route('/meals/add/<id>/<creator>/<location>/<restaurant>/<max_number>/<current_number>')         #####添加meals信息    这里是硬编码
+def add_meals(id, creator, location, restaurant, max_number, current_number):
+    res = d_service.add_meals(id, creator, location, restaurant, max_number, current_number)
+    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+    return rsp
+
+
+@app.route('/meals_modificate/add/<meals_id>/<participant>')         #####meals_modification join 一个人choose to join the meal
+def meals_modificate1(meals_id, participant):
+    res = d_service.meals_modificate_add(meals_id, participant)
+    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+    return rsp
+
+
+@app.route('/meals_modificate/delete/<meals_id>/<participant>')         #####meals_modification join 一个人choose to join the meal
+def meals_modificate2(meals_id, participant):
+    res = d_service.meals_modificate_delete(meals_id, participant)
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
 
 
 
-@app.route('/smartystreets')                          ####show所有的meals
+
+
+@app.route('/smartystreets')                          ####smartystreet api
 def smartystreet():
     auth_id = "1d668e68-7682-f1e6-c470-117ff697e192"
     auth_token = "WBsZrn15pqaJmm2J7qAQ"

@@ -139,19 +139,75 @@ def meals_delete_id(meals_id):
 
     return res
 
-def add_meals():
+def add_meals(id, creator, location, restaurant, max_number, current_number):       #添加饭局信息
     conn = _get_db_connection()
     cur = conn.cursor()
 
     sql = "INSERT INTO " + "ec2_lookmeal" + "." + "meal_information" + " (id,creator,location,restaurant,max_number,current_number) VALUES (%s,%s, %s, %s, %s, %s)"
-    # sql = "Insert into " + db_schema + "." + table_name + " (ID, firstName, lastName, email, addressID) VALUES (" + id + ",'" + firstName + "','" + lastName + "','" + email + "'," + addressID + ")"
+
     print("SQL Statement = " + cur.mogrify(sql, None))
 
 
 
 
-    res = cur.execute(sql,(11111, 'try', '11111st', 'temprestaurant', 1000, 555))
+    res = cur.execute(sql,(id, creator, location, restaurant, max_number, current_number))
     res = cur.fetchall()
+
+    conn.commit()
+
+    conn.close()
+
+    return res
+
+
+
+def meals_modificate_add(meals_id, participant):       #添加饭局信息,使meals_information对应《meals_id>的current_number - 1，然后make_team里面根据<meals_id> <participant>增加一个人
+    conn = _get_db_connection()
+    cur = conn.cursor()
+
+
+    sql1 = "UPDATE ec2_lookmeal.meal_information SET current_number=current_number - 1 WHERE id=" + meals_id
+    print("SQL Statement = " + cur.mogrify(sql1, None))
+    cur.execute(sql1)
+    cur.fetchall()
+
+
+    sql = "INSERT INTO ec2_lookmeal.make_team" + "( meals_id, participant) VALUES( %s, %s)"
+
+
+    print("SQL Statement = " + cur.mogrify(sql, None))
+
+    res = cur.execute(sql, ( meals_id, participant))
+    res = cur.fetchall()
+
+
+
+    conn.commit()
+
+    conn.close()
+
+    return res
+
+def meals_modificate_delete(meals_id, participant):   #########delete语句有点问题
+    conn = _get_db_connection()
+    cur = conn.cursor()
+
+
+    sql1 = "UPDATE ec2_lookmeal.meal_information SET current_number=current_number + 1 WHERE id=" + meals_id
+    print("SQL Statement = " + cur.mogrify(sql1, None))
+    cur.execute(sql1)
+    cur.fetchall()
+
+
+
+    sql = "Delete from ec2_lookmeal.make_team where id=" +"meals_id VALUES(%s)" +" "+ "and participant=" + "participant VALUES(%s)"
+
+    print("SQL Statement = " + cur.mogrify(sql, None))
+
+    res = cur.execute(sql, ( meals_id, participant))
+    res = cur.fetchall()
+
+
 
     conn.commit()
 
