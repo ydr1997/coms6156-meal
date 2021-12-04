@@ -3,7 +3,7 @@ import database_services.RDBService as d_service
 from flask_cors import CORS
 
 
-from flask_mysqldb import MySQL
+# from flask_mysqldb import MySQL
 
 import json
 
