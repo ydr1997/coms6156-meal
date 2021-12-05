@@ -1,69 +1,79 @@
-from flask import Flask, Response, render_template,request
+from flask import Flask, Response, render_template, request, redirect, url_for, session
 import database_services.RDBService as d_service
 from flask_cors import CORS
 
-
-# from flask_mysqldb import MySQL
-
 import json
-
 import logging
-
 import os
 
-from smartystreets_python_sdk import StaticCredentials, exceptions, ClientBuilder
-from smartystreets_python_sdk.us_street import Lookup
-
+# from smartystreets_python_sdk import StaticCredentials, exceptions, ClientBuilder
+# from smartystreets_python_sdk.us_street import Lookup
+# from flask_dance.contrib.google import make_google_blueprint, google
+from middleware import security, notification
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-from application_services.imdb_artists_resource import IMDBArtistResource
-from application_services.UsersResource.user_service import UserResource
+# tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+# app = Flask(__name__, template_folder=tmpl_dir)
+app = Flask(__name__, template_folder='template')
 
-
-
-
-tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
-app = Flask(__name__, template_folder=tmpl_dir)
-
-#
 # app = Flask(__name__)
 CORS(app)
 
+# ----------------------------- Google OAuth2 -----------------------------------
+
+# os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+# os.environ["OAUTHLIB_RELAX_TOKEN_SCOPE"] = "1"
+#
+# app.secret_key = "supersekrit"
+# blueprint = make_google_blueprint(
+#     client_id="314377796932-bcks1e2lbvpi2v6crbb65alcgkpl6l9i.apps.googleusercontent.com",
+#     client_secret="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",
+#     scope=["profile", "email"]
+# )
+# app.register_blueprint(blueprint, url_prefix="/login")
 
 
+# ------------------------------ Middleware ----------------------------------------
+
+# @app.before_request
+# def before_request_func():
+#     print("running before_request_func")
+#     if security.check_security(request):
+#         return render_template('auth-err.html')
 
 
+@app.after_request
+def after_request_func(response):
+    print("running after_request_func")
+    notification.NotificationMiddlewareHandler.notify(request, response)
+    return response
 
+# -----------------------------------------------------------------------------------
 
-
-@app.route('/trytemplate')
-def try_template():
-    # data = request.form
-    # tasks = {
-    #     'ID': data.get('ID'),
-    #     'firstName': data.get('firstName'),
-    #     'lastName': data.get('lastName'),
-    #     'email': data.get('email'),
-    #     'addressID': data.get('addressID')
-    # }
-
-
-
-
-
-    #
-    # if tasks["ID"] is None or tasks["firstName"] is None or tasks["lastName"] is None or tasks["email"] is None or \
-    #         tasks["addressID"] is None:
-    #     rsp = Response(json.dumps(None), status=400, content_type="application/json")
-    # else:
-    #     res = d_service.update_users("UserResource", "User", tasks)
-    #     rsp = Response(json.dumps(res, default=str), status=201, content_type="application/json")
-    # return rsp
-
-    return render_template('trytemplate.html',**context)
+# @app.route('/trytemplate')
+# def try_template():
+#     # data = request.form
+#     # tasks = {
+#     #     'ID': data.get('ID'),
+#     #     'firstName': data.get('firstName'),
+#     #     'lastName': data.get('lastName'),
+#     #     'email': data.get('email'),
+#     #     'addressID': data.get('addressID')
+#     # }
+#
+#     #
+#     # if tasks["ID"] is None or tasks["firstName"] is None or tasks["lastName"] is None or tasks["email"] is None or \
+#     #         tasks["addressID"] is None:
+#     #     rsp = Response(json.dumps(None), status=400, content_type="application/json")
+#     # else:
+#     #     res = d_service.update_users("UserResource", "User", tasks)
+#     #     rsp = Response(json.dumps(res, default=str), status=201, content_type="application/json")
+#     # return rsp
+#
+#     return render_template('trytemplate.html', **context)
 
 
 @app.route('/')
@@ -71,46 +81,22 @@ def hello_world():
     return '<u>Hello World!</u>'
 
 
-@app.route('/imdb/artists/<prefix>')
-def get_artists_by_prefix(prefix):
-    res = IMDBArtistResource.get_by_name_prefix(prefix)
-    rsp = Response(json.dumps(res), status=200, content_type="application/json")
-    return rsp
-
-
-@app.route('/users')
-def get_users():
-    res = UserResource.get_by_template(None)
-    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
-    return rsp
-
-
-@app.route('/<db_schema>/<table_name>/<column_name>/<prefix>')
-def get_by_prefix(db_schema, table_name, column_name, prefix):
-    res = d_service.get_by_prefix(db_schema, table_name, column_name, prefix)
-    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
-    return rsp
-
-@app.route('/ss/<table_name>/<column_name>/<prefix>')
-def getss_by_prefix( table_name, column_name, prefix):
-    db_schema = "ec2_lookmeal"
-    res = d_service.get_by_prefix(db_schema, table_name, column_name, prefix)
-    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
-    return rsp
-
-@app.route('/sss/meals')                          ####show所有的meals
+@app.route('/sss/meals')  ####show所有的meals
 def getsss_by_prefix():
     db_schema = "ec2_lookmeal"
     res = d_service.get_all()
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
 
-# @app.route('/meals/<meals_id>', methods = ["GET"])         #####根据meals_id查找
-# def get_meals_fromid(meals_id):
-#     res = d_service.get_mealsfromid(meals_id)
-#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
-#     return rsp
 
+@app.route('/meals/<meals_id>', methods=["GET"])
+def get_meals_fromid(meals_id):
+    res = d_service.get_mealsfromid("ec2_lookmeal", "meal_information", meals_id)
+    if not res:
+        rsp = Response(json.dumps(res, default=str), status=404, content_type="application/json")
+    else:
+        rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+    return rsp
 
 
 @app.route('/meals/delete/<meals_id>', methods = ["GET"])         #####根据meals_id查找
@@ -119,12 +105,36 @@ def delete_meals(meals_id):
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
 
-@app.route('/meals/add/<id>/<creator>/<location>/<restaurant>/<max_number>/<current_number>', methods = ["POST"])         #####添加meals信息    这里是硬编码
-def add_meals(id, creator, location, restaurant, max_number, current_number):
-    res = d_service.add_meals(id, creator, location, restaurant, max_number, current_number)
-    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+
+@app.route('/meals/add', methods=['POST'])  #####添加meals信息
+def add_meals():
+    if not request.form['id']:
+        raise Exception("[add_meals] no user id")
+    if not request.form['name']:
+        raise Exception("[add_meals] no creator name")
+    if not request.form['addr']:
+        raise Exception("[add_meals] no address")
+    if not request.form['rest']:
+        raise Exception("[add_meals] no rest name")
+    if not request.form['max']:
+        raise Exception("[add_meals] no max cnt")
+    if not request.form['cur']:
+        raise Exception("[add_meals] no cur cnt")
+    print("meal information retrieved!!")
+    res = d_service.add_meals(request.form['id'], request.form['name'],request.form['addr'], request.form['rest'], request.form['max'], request.form['cur'])
+
+    # TODO: error-check the result from query insertion
+
+    rsp = Response(json.dumps(res, default=str), status=201, content_type="application/json")
     return rsp
 
+
+# @app.route('/meals/add/<id>/<creator>/<location>/<restaurant>/<max_number>/<current_number>', methods = ["POST"])         #####添加meals信息    这里是硬编码
+# def add_meals(id, creator, location, restaurant, max_number, current_number):
+#     res = d_service.add_meals(id, creator, location, restaurant, max_number, current_number)
+#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+#     return rsp
+#
 
 @app.route('/meals_modificate/add/<meals_id>/<participant>', methods = ["POST"])         #####meals_modification join 一个人choose to join the meal
 def meals_modificate1(meals_id, participant):
@@ -140,14 +150,11 @@ def meals_modificate2(meals_id, participant):
     return rsp
 
 
-
-
 @app.route('/make_team', methods=["GET"])
 def get_maketeam():
     res = d_service.get_maketeam("ec2_lookmeal", "make_team")
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
-
 
 @app.route('/meal_information', methods=["GET"])
 def get_mealinformation():
@@ -155,48 +162,11 @@ def get_mealinformation():
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
 
-
-@app.route('/meals/<meals_id>', methods=["GET"])
-def get_meals_fromid(meals_id):
-    res = d_service.get_mealsfromid("ec2_lookmeal", "meal_information", meals_id)
-    if not res:
-        rsp = Response(json.dumps(res, default=str), status=404, content_type="application/json")
-    else:
-        rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
-    return rsp
-
-
-# @app.route('/meals/delete/<meals_id>', methods = ["GET"])         #####根据meals_id查找
-# def delete_meals(meals_id):
-#     res = d_service.meals_delete_id(meals_id)
-#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
-#     return rsp
-
-
-
-
-#
-# @app.route('/users/email', methods=["POST"])
-# def update_email():
-#     data = request.form
-#     ID = data.get('ID')
-#     email = data.get('email')
-#     if ID is None:
-#         rsp = Response(json.dumps(None), status=422, content_type="application/json")
-#     else:
-#         res = d_service.update_email("UserResource", "User", ID, email)
-#         rsp = Response(json.dumps(res, default=str), status=201, content_type="application/json")
-#     return rsp
-
-
-
 # @app.route('/meals/<meals_id>', methods = ["GET"])         #####根据meals_id查找
 # def get_meals_fromid(meals_id):
 #     res = d_service.get_mealsfromid(meals_id)
 #     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
 #     return rsp
-
-
 
 
 @app.route('/smartystreets')                          ####smartystreet api
@@ -265,6 +235,7 @@ def smartystreet():
     print("County:		    {}".format(first_candidate.metadata.county_name))
     print("Latitude:		{}".format(first_candidate.metadata.latitude))
     print("Longitude:	    {}".format(first_candidate.metadata.longitude))
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5001)

@@ -1,8 +1,8 @@
-
 import os
 
 # This is a bad place for this import
 import pymysql
+
 
 def get_db_info():
     """
@@ -30,3 +30,7 @@ def get_db_info():
         }
 
     return db_info
+
+
+def get_subscription():
+    return ['/meals/add']
