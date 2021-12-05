@@ -38,18 +38,18 @@ CORS(app)
 
 # ------------------------------ Middleware ----------------------------------------
 
-# @app.before_request
-# def before_request_func():
-#     print("running before_request_func")
-#     if security.check_security(request):
-#         return render_template('auth-err.html')
+@app.before_request
+def before_request_func():
+    print("running before_request_func")
+    if security.check_security(request):
+        return render_template('auth-err.html')
 
 
-@app.after_request
-def after_request_func(response):
-    print("running after_request_func")
-    notification.NotificationMiddlewareHandler.notify(request, response)
-    return response
+# @app.after_request
+# def after_request_func(response):
+#     print("running after_request_func")
+#     notification.NotificationMiddlewareHandler.notify(request, response)
+#     return response
 
 # -----------------------------------------------------------------------------------
 

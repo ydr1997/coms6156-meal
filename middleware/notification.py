@@ -51,6 +51,7 @@ if response.status_code != 200:
 
 class NotificationMiddlewareHandler:
     sns_client = None
+    s_url = 'https://hooks.slack.com/services/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'
 
     def __init__(self):
         pass
@@ -78,12 +79,17 @@ class NotificationMiddlewareHandler:
             print('[notification before publish] req_data: ', req_data)
 
             client = NotificationMiddlewareHandler.get_sns_client()
-            print("size of param: ", len(req_data))
             rsp = client.publish(TopicArn="arn:aws:sns:us-east-2:843691262496:mealSNS",
                                  Message=req_data)
-            # print(rsp['ResponseMetadata']['HTTPStatusCode'])
-            print('[notification.notify] after publish --> response.status_code = ', rsp['ResponseMetadata']['HTTPStatusCode'])
+            print('[notification.notify] after publish to SNS --> response.status_code = ', rsp['ResponseMetadata']['HTTPStatusCode'])
 
+            slack_data = json.dumps(
+                {'text': req_data}).encode('utf-8')
+            response = requests.post(
+                NotificationMiddlewareHandler.s_url, data=slack_data,
+                headers={'Content-Type': 'application/json'}
+            )
+            print("[notification.notify] slack.Response = ", response.status_code)
 
     @classmethod
     def get_sns_client(cls):
