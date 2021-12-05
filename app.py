@@ -105,11 +105,13 @@ def getsss_by_prefix():
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
 
-@app.route('/meals/<meals_id>', methods = ["GET"])         #####根据meals_id查找
-def get_meals_fromid(meals_id):
-    res = d_service.get_mealsfromid(meals_id)
-    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
-    return rsp
+# @app.route('/meals/<meals_id>', methods = ["GET"])         #####根据meals_id查找
+# def get_meals_fromid(meals_id):
+#     res = d_service.get_mealsfromid(meals_id)
+#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+#     return rsp
+
+
 
 @app.route('/meals/delete/<meals_id>', methods = ["GET"])         #####根据meals_id查找
 def delete_meals(meals_id):
@@ -137,6 +139,62 @@ def meals_modificate2(meals_id, participant):
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
 
+
+
+
+@app.route('/make_team', methods=["GET"])
+def get_maketeam():
+    res = d_service.get_maketeam("ec2_lookmeal", "make_team")
+    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+    return rsp
+
+
+@app.route('/meal_information', methods=["GET"])
+def get_mealinformation():
+    res = d_service.get_mealinformation("ec2_lookmeal", "meal_information")
+    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+    return rsp
+
+
+@app.route('/meals/<meals_id>', methods=["GET"])
+def get_meals_fromid(meals_id):
+    res = d_service.get_mealsfromid("ec2_lookmeal", "meal_information", meals_id)
+    if not res:
+        rsp = Response(json.dumps(res, default=str), status=404, content_type="application/json")
+    else:
+        rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+    return rsp
+
+
+# @app.route('/meals/delete/<meals_id>', methods = ["GET"])         #####根据meals_id查找
+# def delete_meals(meals_id):
+#     res = d_service.meals_delete_id(meals_id)
+#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+#     return rsp
+
+
+
+
+#
+# @app.route('/users/email', methods=["POST"])
+# def update_email():
+#     data = request.form
+#     ID = data.get('ID')
+#     email = data.get('email')
+#     if ID is None:
+#         rsp = Response(json.dumps(None), status=422, content_type="application/json")
+#     else:
+#         res = d_service.update_email("UserResource", "User", ID, email)
+#         rsp = Response(json.dumps(res, default=str), status=201, content_type="application/json")
+#     return rsp
+
+
+
+# @app.route('/meals/<meals_id>', methods = ["GET"])         #####根据meals_id查找
+# def get_meals_fromid(meals_id):
+#     res = d_service.get_mealsfromid(meals_id)
+#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+#     return rsp
 
 
 

@@ -81,26 +81,26 @@ def find_by_template(db_schema, table_name, template, field_list):
     return res
 
 
-def get_mealsfromid(meals_id):
-
-    conn = _get_db_connection()
-    cur = conn.cursor()
-
-    mm =  "meal_information"
-    # print(meals_id)
-
-    # sql = "select * from " + "ec2_lookmeal" + "." + "meal_information" + "WHERE ID = (" + meals_id
-
-    sql = "select * from " + "ec2_lookmeal" + "." + mm + " " + "where id = " + meals_id
-
-    print("SQL Statement = " + cur.mogrify(sql, None))
-
-    res = cur.execute(sql)
-    res = cur.fetchall()
-
-    conn.close()
-
-    return res
+# def get_mealsfromid(meals_id):
+#
+#     conn = _get_db_connection()
+#     cur = conn.cursor()
+#
+#     mm =  "meal_information"
+#     # print(meals_id)
+#
+#     # sql = "select * from " + "ec2_lookmeal" + "." + "meal_information" + "WHERE ID = (" + meals_id
+#
+#     sql = "select * from " + "ec2_lookmeal" + "." + mm + " " + "where id = " + meals_id
+#
+#     print("SQL Statement = " + cur.mogrify(sql, None))
+#
+#     res = cur.execute(sql)
+#     res = cur.fetchall()
+#
+#     conn.close()
+#
+#     return res
 
 def get_all( ):
 
@@ -214,3 +214,72 @@ def meals_modificate_delete(meals_id, participant):   #########delete语句有�
     conn.close()
 
     return res
+
+
+def get_maketeam(db_schema, table_name):
+    conn = _get_db_connection()
+    cur = conn.cursor()
+
+    sql = "select * from " + db_schema + "." + table_name
+    print("SQL Statement = " + cur.mogrify(sql, None))
+
+    res = cur.execute(sql)
+    res = cur.fetchall()
+    print(res)
+
+    conn.close()
+
+    return res
+
+def get_mealinformation(db_schema, table_name):
+    conn = _get_db_connection()
+    cur = conn.cursor()
+
+    sql = "select * from " + db_schema + "." + table_name
+    print("SQL Statement = " + cur.mogrify(sql, None))
+
+    res = cur.execute(sql)
+    res = cur.fetchall()
+    print(res)
+
+    conn.close()
+
+    return res
+
+
+def get_mealsfromid(db_schema, table_name, meals_id):
+    conn = _get_db_connection()
+    cur = conn.cursor()
+
+    sql = "select * from " + db_schema + "." + table_name + " where id = " + meals_id
+    print(sql)
+    print("SQL Statement = " + cur.mogrify(sql, None))
+
+    res = cur.execute(sql)
+    res = cur.fetchall()
+    print(res)
+
+    conn.close()
+
+    return res
+
+# def get_mealsfromid(meals_id):
+#
+#     conn = _get_db_connection()
+#     cur = conn.cursor()
+#
+#     mm =  "meal_information"
+#     # print(meals_id)
+#
+#     # sql = "select * from " + "ec2_lookmeal" + "." + "meal_information" + "WHERE ID = (" + meals_id
+#
+#     sql = "select * from " + "ec2_lookmeal" + "." + mm + " " + "where id = " + meals_id
+#
+#     print("SQL Statement = " + cur.mogrify(sql, None))
+#
+#     res = cur.execute(sql)
+#     res = cur.fetchall()
+#
+#     conn.close()
+#
+#     return res
