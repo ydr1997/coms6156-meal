@@ -46,16 +46,17 @@ CORS(app)
 
 # ------------------------------ Middleware ----------------------------------------
 
-@app.before_request
-def before_request_func():
-    print("running before_request_func")
-    if not security.check_security(request, session):
-        return render_template('auth-err.html')
+# @app.before_request
+# def before_request_func():
+#     print("running before_request_func")
+#     if security.check_security(request):
+#         return render_template('auth-err.html')
 
 
 @app.after_request
 def after_request_func(response):
     print("running after_request_func")
+    notification.NotificationMiddlewareHandler.notify(request, response)
     return response
 
 # -----------------------------------------------------------------------------------
@@ -139,10 +140,26 @@ def delete_meals(meals_id):
     return rsp
 
 
-@app.route('/meals/add')  #####添加meals信息
+@app.route('/meals/add', methods=['POST'])  #####添加meals信息
 def add_meals():
-    res = d_service.add_meals()
-    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+    if not request.form['id']:
+        raise Exception("[add_meals] no user id")
+    if not request.form['name']:
+        raise Exception("[add_meals] no creator name")
+    if not request.form['addr']:
+        raise Exception("[add_meals] no address")
+    if not request.form['rest']:
+        raise Exception("[add_meals] no rest name")
+    if not request.form['max']:
+        raise Exception("[add_meals] no max cnt")
+    if not request.form['cur']:
+        raise Exception("[add_meals] no cur cnt")
+    print("meal information retrieved!!")
+    res = d_service.add_meals(request.form['id'], request.form['name'],request.form['addr'], request.form['rest'], request.form['max'], request.form['cur'])
+
+    # TODO: error-check the result from query insertion
+
+    rsp = Response(json.dumps(res, default=str), status=201, content_type="application/json")
     return rsp
 
 #

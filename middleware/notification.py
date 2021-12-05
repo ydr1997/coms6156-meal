@@ -1,6 +1,6 @@
 import requests
 import json
-# import boto3
+import boto3
 import middleware.context as context
 
 """
@@ -55,29 +55,59 @@ class NotificationMiddlewareHandler:
     def __init__(self):
         pass
 
+    @staticmethod
+    def notify(req, rsp):
+        subscription = context.get_subscription()
+        print("[notification.notify] req.path: ", req.path)
+        if req.path in subscription and rsp.status_code == 201:
+            # TODO: store email in session or run SQL query to get email
+            notification_data = {
+                'email': 'yk2822@columbia.edu',
+                'data': {'id': req.form['id'],
+                         'name': req.form['name'],
+                         'addr': req.form['addr'],
+                         'rest': req.form['rest'],
+                         'max': req.form['max'],
+                         'cur': req.form['cur']
+                         }
+            }
+
+            print("[notification] req_data from POST: ", notification_data)
+
+            req_data = json.dumps(notification_data)
+            print('[notification before publish] req_data: ', req_data)
+
+            client = NotificationMiddlewareHandler.get_sns_client()
+            print("size of param: ", len(req_data))
+            rsp = client.publish(TopicArn="arn:aws:sns:us-east-2:843691262496:mealSNS",
+                                 Message=req_data)
+            # print(rsp['ResponseMetadata']['HTTPStatusCode'])
+            print('[notification.notify] after publish --> response.status_code = ', rsp['ResponseMetadata']['HTTPStatusCode'])
+
+
     @classmethod
     def get_sns_client(cls):
         if NotificationMiddlewareHandler.sns_client is None:
-            NotificationMiddlewareHandler.sns_client = boto3.client("sns", region_name="us-east-1")
+            NotificationMiddlewareHandler.sns_client = boto3.client("sns", region_name="us-east-2")
         return NotificationMiddlewareHandler.sns_client
 
-    @classmethod
-    def get_sns_topics(cls):
-        s_client = NotificationMiddlewareHandler.get_sns_client()
-        result = response = s_client.list_topics()
-        topics = result["Topics"]
-        print("[get_sns_topics] topics: ", topics)
-        return topics
+    # @classmethod
+    # def send_sns_message(cls, sns_topic, message):
+    #     s_client = NotificationMiddlewareHandler.get_sns_client()
+    #     response = s_client.publish(
+    #         TargetArn=sns_topic,
+    #         Message=json.dumps({'default': json.dumps(message)}),
+    #         MessageStructure='json'
+    #     )
+    #     print("Publish response = ", json.dumps(response, indent=2))
 
-    @classmethod
-    def send_sns_message(cls, sns_topic, message):
-        s_client = NotificationMiddlewareHandler.get_sns_client()
-        response = s_client.publish(
-            TargetArn=sns_topic,
-            Message=json.dumps({'default': json.dumps(message)}),
-            MessageStructure='json'
-        )
-        print("Publish response = ", json.dumps(response, indent=2))
+    # @classmethod
+    # def get_sns_topics(cls):
+    #     s_client = NotificationMiddlewareHandler.get_sns_client()
+    #     result = response = s_client.list_topics()
+    #     topics = result["Topics"]
+    #     print("[get_sns_topics] topics: ", topics)
+    #     return topics
 
     # @staticmethod
     # def notify(request, response):
@@ -119,6 +149,3 @@ class NotificationMiddlewareHandler:
     #                 headers={'Content-Type': 'application/json'}
     #             )
     #             print("Response = ", response.status_code)
-
-
-

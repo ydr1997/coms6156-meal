@@ -10,7 +10,6 @@ logger.setLevel(logging.INFO)
 
 
 def _get_db_connection():
-
     db_connect_info = context.get_db_info()
 
     logger.info("RDBService._get_db_connection:")
@@ -18,18 +17,17 @@ def _get_db_connection():
 
     db_info = context.get_db_info()
     db_connection = pymysql.connect(
-       **db_info
+        **db_info
     )
     return db_connection
 
 
 def get_by_prefix(db_schema, table_name, column_name, value_prefix):
-
     conn = _get_db_connection()
     cur = conn.cursor()
 
     sql = "select * from " + db_schema + "." + table_name + " where " + \
-        column_name + " like " + "'" + value_prefix + "%'"
+          column_name + " like " + "'" + value_prefix + "%'"
     print("SQL Statement = " + cur.mogrify(sql, None))
 
     res = cur.execute(sql)
@@ -40,13 +38,7 @@ def get_by_prefix(db_schema, table_name, column_name, value_prefix):
     return res
 
 
-
-
-
-
-
 def _get_where_clause_args(template):
-
     terms = []
     args = []
     clause = None
@@ -55,19 +47,17 @@ def _get_where_clause_args(template):
         clause = ""
         args = None
     else:
-        for k,v in template.items():
+        for k, v in template.items():
             terms.append(k + "=%s")
             args.append(v)
 
-        clause = " where " +  " AND ".join(terms)
-
+        clause = " where " + " AND ".join(terms)
 
     return clause, args
 
 
 def find_by_template(db_schema, table_name, template, field_list):
-
-    wc,args = _get_where_clause_args(template)
+    wc, args = _get_where_clause_args(template)
 
     conn = _get_db_connection()
     cur = conn.cursor()
@@ -82,11 +72,10 @@ def find_by_template(db_schema, table_name, template, field_list):
 
 
 def get_mealsfromid(meals_id):
-
     conn = _get_db_connection()
     cur = conn.cursor()
 
-    mm =  "meal_information"
+    mm = "meal_information"
     # print(meals_id)
 
     # sql = "select * from " + "ec2_lookmeal" + "." + "meal_information" + "WHERE ID = (" + meals_id
@@ -102,11 +91,10 @@ def get_mealsfromid(meals_id):
 
     return res
 
-def get_all( ):
 
+def get_all():
     conn = _get_db_connection()
     cur = conn.cursor()
-
 
     sql = "select * from " + "ec2_lookmeal" + "." + "make_team"
 
@@ -119,17 +107,14 @@ def get_all( ):
 
     return res
 
+
 def meals_delete_id(meals_id):
     conn = _get_db_connection()
     cur = conn.cursor()
 
-
-
     sql = "Delete from ec2_lookmeal.meal_information where id=" + meals_id
 
     print("SQL Statement = " + cur.mogrify(sql, None))
-
-
 
     res = cur.execute(sql)
     res = cur.fetchall()
@@ -139,7 +124,8 @@ def meals_delete_id(meals_id):
 
     return res
 
-def add_meals():
+
+def add_meals(id, name, add, rest, maxCnt, curCnt):
     conn = _get_db_connection()
     cur = conn.cursor()
 
@@ -147,10 +133,7 @@ def add_meals():
     # sql = "Insert into " + db_schema + "." + table_name + " (ID, firstName, lastName, email, addressID) VALUES (" + id + ",'" + firstName + "','" + lastName + "','" + email + "'," + addressID + ")"
     print("SQL Statement = " + cur.mogrify(sql, None))
 
-
-
-
-    res = cur.execute(sql,(11111, 'try', '11111st', 'temprestaurant', 1000, 555))
+    res = cur.execute(sql, (id, name, add, rest, maxCnt, curCnt))
     res = cur.fetchall()
 
     conn.commit()
