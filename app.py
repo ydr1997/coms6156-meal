@@ -105,33 +105,33 @@ def getsss_by_prefix():
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
 
-@app.route('/meals/<meals_id>')         #####根据meals_id查找
+@app.route('/meals/<meals_id>', methods = ["GET"])         #####根据meals_id查找
 def get_meals_fromid(meals_id):
     res = d_service.get_mealsfromid(meals_id)
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
 
-@app.route('/meals/delete/<meals_id>')         #####根据meals_id查找
+@app.route('/meals/delete/<meals_id>', methods = ["GET"])         #####根据meals_id查找
 def delete_meals(meals_id):
     res = d_service.meals_delete_id(meals_id)
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
 
-@app.route('/meals/add/<id>/<creator>/<location>/<restaurant>/<max_number>/<current_number>')         #####添加meals信息    这里是硬编码
+@app.route('/meals/add/<id>/<creator>/<location>/<restaurant>/<max_number>/<current_number>', methods = ["POST"])         #####添加meals信息    这里是硬编码
 def add_meals(id, creator, location, restaurant, max_number, current_number):
     res = d_service.add_meals(id, creator, location, restaurant, max_number, current_number)
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
 
 
-@app.route('/meals_modificate/add/<meals_id>/<participant>')         #####meals_modification join 一个人choose to join the meal
+@app.route('/meals_modificate/add/<meals_id>/<participant>', methods = ["POST"])         #####meals_modification join 一个人choose to join the meal
 def meals_modificate1(meals_id, participant):
     res = d_service.meals_modificate_add(meals_id, participant)
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
 
 
-@app.route('/meals_modificate/delete/<meals_id>/<participant>')         #####meals_modification join 一个人choose to join the meal
+@app.route('/meals_modificate/delete/<meals_id>/<participant>', methods = ["POST"])         #####meals_modification join 一个人choose to join the meal
 def meals_modificate2(meals_id, participant):
     res = d_service.meals_modificate_delete(meals_id, participant)
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
