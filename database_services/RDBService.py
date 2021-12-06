@@ -195,26 +195,41 @@ def meals_modificate_add(meals_id, participant):       #添加饭局信息,使me
 
     return res
 
-def meals_modificate_delete(meals_id, participant):   #########delete语句有点问题 没法删
-    conn = _get_db_connection()
-    cur = conn.cursor()
-    # print(meals_id)
-    # print(participant)
-    sql1 = "UPDATE ec2_lookmeal.meal_information SET current_number=current_number - 1 WHERE id=" + meals_id
-    print("SQL Statement = " + cur.mogrify(sql1, None))
-    # cur.execute(sql1)
-    # cur.fetchall()
+# def meals_modificate_delete(meals_id, participant):   #########delete sql有点问题先注释掉了
+#     conn = _get_db_connection()
+#     cur = conn.cursor()
+#
+#     sql1 = "UPDATE ec2_lookmeal.meal_information SET current_number=current_number + 1 WHERE id=" + meals_id
+#     print("SQL Statement = " + cur.mogrify(sql1, None))
+#     cur.execute(sql1)
+#     cur.fetchall()
+#
+#     sql = "Delete from ec2_lookmeal.make_team where id=" + meals_id+ " and participant=" + participant VALUES (%s)
+#     # sql = "INSERT INTO " + "ec2_lookmeal" + "." + "make_team" + "(meals_id, participant) VALUES(%s, %s)"
+#     print("SQL Statement = " + cur.mogrify(sql, None))
+#
+#
+#     res = cur.execute(sql,(participant))
+#     res = cur.fetchall()
+#     conn.commit()
+#     conn.close()
+#
+#     return res
 
-    # sql = "Delete from"+" "+ "ec2_lookmeal" + "." + "make_team" +" "+ "where id=" + "meals_id VALUES(%s)" +" "+ "and participant=" + "participant VALUES(%s)"
-    # print("SQL Statement = " + cur.mogrify(sql, None))
-    #
-    res = cur.execute(sql1)
-    res = cur.fetchall()
-
-    conn.commit()
-    conn.close()
-
-    return res
+# def meals_delete_id(meals_id):
+#     conn = _get_db_connection()
+#     cur = conn.cursor()
+#
+#     sql = "Delete from ec2_lookmeal.meal_information where id=" + meals_id
+#
+#     print("SQL Statement = " + cur.mogrify(sql, None))
+#
+#     res = cur.execute(sql)
+#     res = cur.fetchall()
+#     conn.commit()
+#     conn.close()
+#
+#     return res
 
 
 # def meals_modificate_delete(meals_id, participant):   #########delete语句有点问题
