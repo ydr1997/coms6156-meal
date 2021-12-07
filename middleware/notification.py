@@ -37,7 +37,7 @@ import smtplib, ssl
 
 class NotificationMiddlewareHandler:
     sns_client = None
-    s_url = 'https://hooks.slack.com/services/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'
+    s_url = 'https://hooks.slack.com/services/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'
 
     def __init__(self):
         pass
