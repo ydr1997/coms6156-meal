@@ -45,11 +45,11 @@ CORS(app)
 #         return render_template('auth-err.html')
 
 
-@app.after_request
-def after_request_func(response):
-    print("running after_request_func")
-    notification.NotificationMiddlewareHandler.notify(request, response)
-    return response
+# @app.after_request
+# def after_request_func(response):
+#     print("running after_request_func")
+#     notification.NotificationMiddlewareHandler.notify(request, response)
+#     return response
 
 # -----------------------------------------------------------------------------------
 
@@ -99,9 +99,17 @@ def get_meals_fromid(meals_id):
     return rsp
 
 
-@app.route('/meals/delete/<meals_id>', methods = ["GET"])         #####根据meals_id查找
-def delete_meals(meals_id):
-    res = d_service.meals_delete_id(meals_id)
+# @app.route('/meals/delete/<meals_id>', methods = ["GET"])         #####根据meals_id查找
+# def delete_meals(meals_id):
+#     res = d_service.meals_delete_id(meals_id)
+#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+#     return rsp
+
+@app.route('/meals/delete', methods = ["DELETE"])         #####根据meals_id查找
+def delete_meals():
+    if not request.form['id']:
+        raise Exception("[add_meals] no meals_id")
+    res = d_service.meals_delete_id(request.form['id'])
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
 
@@ -127,6 +135,31 @@ def add_meals():
 
     rsp = Response(json.dumps(res, default=str), status=201, content_type="application/json")
     return rsp
+    # # print(111)
+    # # data = request.form
+    # data = request.form
+    # print(data)
+    # print(data[id])
+    # print(data['name'])
+    # print(data['addr'])
+    #
+    # tasks = {
+    #     'id': data.get('id'),
+    #     'name': data.get('name'),
+    #     'addr': data.get('addr'),
+    #     'rest': data.get('rest'),
+    #     'max': data.get('max'),
+    #     'cur': data.get('cur')
+    # }
+    # print(tasks)
+    # if tasks["id"] is None or tasks["name"] is None or tasks["addr"] is None or tasks["rest"] is None or \
+    #         tasks["max"] is None or tasks["cur"] is None:
+    #     rsp = Response(json.dumps(None), status=400, content_type="application/json")
+    # else:
+    #     res = d_service.update_users("ec2_lookmeal", "meal_information", tasks)
+    #     rsp = Response(json.dumps(res, default=str), status=201, content_type="application/json")
+    # return rsp
+
 
 
 # @app.route('/meals/add/<id>/<creator>/<location>/<restaurant>/<max_number>/<current_number>', methods = ["POST"])         #####添加meals信息    这里是硬编码
@@ -136,18 +169,50 @@ def add_meals():
 #     return rsp
 #
 
-@app.route('/meals_modificate/add/<meals_id>/<participant>', methods = ["POST"])         #####meals_modification join 一个人choose to join the meal
-def meals_modificate1(meals_id, participant):
-    res = d_service.meals_modificate_add(meals_id, participant)
-    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
-    return rsp
+# @app.route('/meals_modificate/add/<meals_id>/<participant>', methods = ["POST"])         #####meals_modification join 一个人choose to join the meal
+# def meals_modificate1(meals_id, participant):
+#     res = d_service.meals_modificate_add(meals_id, participant)
+#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+#     return rsp
 
 
-@app.route('/meals_modificate/delete/<meals_id>/<participant>', methods = ["POST"])         #####meals_modification join 一个人choose to join the meal
-def meals_modificate2(meals_id, participant):
-    res = d_service.meals_modificate_delete(meals_id, participant)
-    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+@app.route('/meals_modificate/add', methods = ["POST"])         #####meals_modification join 一个人choose to join the meal
+def meals_modificate1():
+    if not request.form['id']:
+        raise Exception("[add_meals] no user id")
+    if not request.form['name']:
+        raise Exception("[add_meals] no creator name")
+    print("make team retrieved!!")
+    res = d_service.meals_modificate_add(request.form['id'], request.form['name'])
+
+    rsp = Response(json.dumps(res, default=str), status=201, content_type="application/json")
     return rsp
+
+# @app.route('/meals_modificate/delete', methods = ["DELETE"])   ###有点问题 先注释掉了
+# def meals_modificate2():
+#     if not request.form['id']:
+#         raise Exception("[add_meals] no user id")
+#     if not request.form['name']:
+#         raise Exception("[add_meals] no creator name")
+#     print("make team retrieved!!")
+#     res = d_service.meals_modificate_delete(request.form['id'], request.form['name'])
+#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+#     return rsp
+
+# @app.route('/meals/delete', methods = ["DELETE"])         #####根据meals_id查找
+# def delete_meals():
+#     if not request.form['id']:
+#         raise Exception("[add_meals] no meals_id")
+#     res = d_service.meals_delete_id(request.form['id'])
+#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+#     return rsp
+
+
+# @app.route('/meals_modificate/delete/<meals_id>/<participant>', methods = ["POST"])         #####meals_modification join 一个人choose to join the meal
+# def meals_modificate2(meals_id, participant):
+#     res = d_service.meals_modificate_delete(meals_id, participant)
+#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+#     return rsp
 
 
 @app.route('/make_team', methods=["GET"])

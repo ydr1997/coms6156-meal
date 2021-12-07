@@ -140,6 +140,41 @@ def add_meals(id, creator, location, restaurant, max_number, current_number):   
 
     return res
 
+# def add_meals(db_schema, table_name, tasks):       #添加饭局信息
+#     print(tasks)
+#     id = tasks["id"]
+#     name = tasks["name"]
+#     addr = tasks["addr"]
+#     rest = tasks["rest"]
+#     max = tasks["max"]
+#     cur = tasks["cur"]
+#
+#     conn = _get_db_connection()
+#     cur = conn.cursor()
+#
+#     sql = "INSERT INTO " + db_schema + "." + table_name + " (id, creator, location, restaurant, max_number, current_number) VALUES (%s, %s, %s, %s, %s, %s)"
+#     #sql = "Insert into " + db_schema + "." + table_name + " (ID, firstName, lastName, email, addressID) VALUES (" + id + ",'" + firstName + "','" + lastName + "','" + email + "'," + addressID + ")"
+#     print("SQL Statement = " + cur.mogrify(sql, None))
+#
+#     res = cur.execute(sql, (id, name, addr, rest, max, cur))
+#     conn.commit()
+#     conn.close()
+#     return res
+    # conn = _get_db_connection()
+    # cur = conn.cursor()
+    #
+    # sql = "INSERT INTO " + "ec2_lookmeal" + "." + "meal_information" + " (id,creator,location,restaurant,max_number,current_number) VALUES (%s,%s, %s, %s, %s, %s)"
+    #
+    # print("SQL Statement = " + cur.mogrify(sql, None))
+    #
+    # res = cur.execute(sql,(id, creator, location, restaurant, max_number, current_number))
+    # res = cur.fetchall()
+    #
+    # conn.commit()
+    # conn.close()
+    #
+    # return res
+
 def meals_modificate_add(meals_id, participant):       #添加饭局信息,使meals_information对应《meals_id>的current_number - 1，然后make_team里面根据<meals_id> <participant>增加一个人
     conn = _get_db_connection()
     cur = conn.cursor()
@@ -149,11 +184,10 @@ def meals_modificate_add(meals_id, participant):       #添加饭局信息,使me
     cur.execute(sql1)
     cur.fetchall()
 
-    sql = "INSERT INTO ec2_lookmeal.make_team" + "( meals_id, participant) VALUES( %s, %s)"
-
+    sql = "INSERT INTO " + "ec2_lookmeal" + "." + "make_team" + "(meals_id, participant) VALUES(%s, %s)"
     print("SQL Statement = " + cur.mogrify(sql, None))
 
-    res = cur.execute(sql, ( meals_id, participant))
+    res = cur.execute(sql, (meals_id, participant))
     res = cur.fetchall()
 
     conn.commit()
@@ -161,26 +195,63 @@ def meals_modificate_add(meals_id, participant):       #添加饭局信息,使me
 
     return res
 
-def meals_modificate_delete(meals_id, participant):   #########delete语句有点问题
-    conn = _get_db_connection()
-    cur = conn.cursor()
+# def meals_modificate_delete(meals_id, participant):   #########delete sql有点问题先注释掉了
+#     conn = _get_db_connection()
+#     cur = conn.cursor()
+#
+#     sql1 = "UPDATE ec2_lookmeal.meal_information SET current_number=current_number + 1 WHERE id=" + meals_id
+#     print("SQL Statement = " + cur.mogrify(sql1, None))
+#     cur.execute(sql1)
+#     cur.fetchall()
+#
+#     sql = "Delete from ec2_lookmeal.make_team where id=" + meals_id+ " and participant=" + participant VALUES (%s)
+#     # sql = "INSERT INTO " + "ec2_lookmeal" + "." + "make_team" + "(meals_id, participant) VALUES(%s, %s)"
+#     print("SQL Statement = " + cur.mogrify(sql, None))
+#
+#
+#     res = cur.execute(sql,(participant))
+#     res = cur.fetchall()
+#     conn.commit()
+#     conn.close()
+#
+#     return res
 
-    sql1 = "UPDATE ec2_lookmeal.meal_information SET current_number=current_number + 1 WHERE id=" + meals_id
-    print("SQL Statement = " + cur.mogrify(sql1, None))
-    cur.execute(sql1)
-    cur.fetchall()
+# def meals_delete_id(meals_id):
+#     conn = _get_db_connection()
+#     cur = conn.cursor()
+#
+#     sql = "Delete from ec2_lookmeal.meal_information where id=" + meals_id
+#
+#     print("SQL Statement = " + cur.mogrify(sql, None))
+#
+#     res = cur.execute(sql)
+#     res = cur.fetchall()
+#     conn.commit()
+#     conn.close()
+#
+#     return res
 
-    sql = "Delete from ec2_lookmeal.make_team where id=" +"meals_id VALUES(%s)" +" "+ "and participant=" + "participant VALUES(%s)"
 
-    print("SQL Statement = " + cur.mogrify(sql, None))
-
-    res = cur.execute(sql, ( meals_id, participant))
-    res = cur.fetchall()
-
-    conn.commit()
-    conn.close()
-
-    return res
+# def meals_modificate_delete(meals_id, participant):   #########delete语句有点问题
+#     conn = _get_db_connection()
+#     cur = conn.cursor()
+#
+#     sql1 = "UPDATE ec2_lookmeal.meal_information SET current_number=current_number + 1 WHERE id=" + meals_id
+#     print("SQL Statement = " + cur.mogrify(sql1, None))
+#     cur.execute(sql1)
+#     cur.fetchall()
+#
+#     sql = "Delete from ec2_lookmeal.make_team where id=" +"meals_id VALUES(%s)" +" "+ "and participant=" + "participant VALUES(%s)"
+#
+#     print("SQL Statement = " + cur.mogrify(sql, None))
+#
+#     res = cur.execute(sql, ( meals_id, participant))
+#     res = cur.fetchall()
+#
+#     conn.commit()
+#     conn.close()
+#
+#     return res
 
 
 def get_maketeam(db_schema, table_name):
