@@ -34,3 +34,8 @@ def get_db_info():
 
 def get_subscription():
     return ['/meals/add']
+
+
+def get_smtp_sender_config():
+    return {'sender': os.environ.get("SENDER", None),
+            'password': os.environ.get("SENDERPASSWORD", None)}

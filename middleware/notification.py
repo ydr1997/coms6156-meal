@@ -2,21 +2,7 @@ import requests
 import json
 import boto3
 import middleware.context as context
-
-"""
-# Set the webhook_url to the one provided by Slack when you create the webhook at https://my.slack.com/services/new/incoming-webhook/
-webhook_url = 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX'
-slack_data = {'text': "Sup! We're hacking shit together @HackSussex :spaghetti:"}
-response = requests.post(
-    webhook_url, data=json.dumps(slack_data),
-    headers={'Content-Type': 'application/json'}
-)
-if response.status_code != 200:
-    raise ValueError(
-        'Request to slack returned an error %s, the response is:\n%s'
-        % (response.status_code, response.text)
-    )
-"""
+import smtplib, ssl
 
 
 #
@@ -75,6 +61,7 @@ class NotificationMiddlewareHandler:
 
             print("[notification] req_data from POST: ", notification_data)
 
+            # Publish to SNS topic
             req_data = json.dumps(notification_data)
             print('[notification before publish] req_data: ', req_data)
 
@@ -83,6 +70,7 @@ class NotificationMiddlewareHandler:
                                  Message=req_data)
             print('[notification.notify] after publish to SNS --> response.status_code = ', rsp['ResponseMetadata']['HTTPStatusCode'])
 
+            # Send slack notification
             slack_data = json.dumps(
                 {'text': req_data}).encode('utf-8')
             response = requests.post(
@@ -91,13 +79,52 @@ class NotificationMiddlewareHandler:
             )
             print("[notification.notify] slack.Response = ", response.status_code)
 
+            # Send an Email confirmation
+            print("[notification.notify] before email notification")
+            if not NotificationMiddlewareHandler.notify_email(notification_data['email'], notification_data['data']):
+                print("Error sending email notification")
+            print("[notification.notify] after email notification")
+
+
     @classmethod
     def get_sns_client(cls):
         if NotificationMiddlewareHandler.sns_client is None:
             NotificationMiddlewareHandler.sns_client = boto3.client("sns", region_name="us-east-2")
         return NotificationMiddlewareHandler.sns_client
 
-    # @classmethod
+
+    @classmethod
+    def notify_email(cls, rcver, msg):
+        smtp_server = "smtp.gmail.com"
+        port = 587  # For starttls
+        sender_config = context.get_smtp_sender_config()
+        sender_email = sender_config['sender']
+        password = sender_config['password']
+
+        test_msg = "[Success] Testing email notification for Meal Microservice!"
+
+        # Create a secure SSL context
+        ctext = ssl.create_default_context()
+
+        # Try to log in to server and send email
+        try:
+            server = smtplib.SMTP(smtp_server, port)
+            # server.ehlo()  # Can be omitted
+            server.starttls(context=ctext)  # Secure the connection
+            # server.ehlo()  # Can be omitted
+            server.login(sender_email, password)
+            server.sendmail(sender_email, rcver, test_msg)
+        except Exception as e:
+            # Print any error messages to stdout
+            print(e)
+            return False
+        finally:
+            server.quit()
+
+        return True
+
+
+        # @classmethod
     # def send_sns_message(cls, sns_topic, message):
     #     s_client = NotificationMiddlewareHandler.get_sns_client()
     #     response = s_client.publish(
