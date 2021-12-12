@@ -61,7 +61,7 @@ def hello_world():
 
 @app.route('/api/meals', methods=["GET"])
 def get_meals():
-    meal_id = request.args.get('meal_id')
+    meal_id = request.args.get('meal_id')       # 127.0.0.1:5000/api/meals?meal_id=1
     res = None
 
     if not meal_id:
