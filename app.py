@@ -91,7 +91,7 @@ def hello_world():
 
 @app.route('/api/meals', methods=["GET"])
 def get_meals():
-    meal_id = request.args.get('meal_id')
+    meal_id = request.args.get('meal_id')       # 127.0.0.1:5000/api/meals?meal_id=1
     res = None
 
     if not meal_id:
@@ -241,7 +241,7 @@ def get_maketeam():
 #     return rsp
 
 
-@app.route('/api/smartystreets', method=['GET'])                          ####smartystreet api
+@app.route('/api/smartystreets')                          ####smartystreet api
 def smartystreet():
     auth_id = "1d668e68-7682-f1e6-c470-117ff697e192"
     auth_token = "WBsZrn15pqaJmm2J7qAQ"
