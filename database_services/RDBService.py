@@ -71,27 +71,6 @@ def find_by_template(db_schema, table_name, template, field_list):
     return res
 
 
-# def get_mealsfromid(meals_id):
-#
-#     conn = _get_db_connection()
-#     cur = conn.cursor()
-#
-#     mm =  "meal_information"
-#     # print(meals_id)
-#
-#     # sql = "select * from " + "ec2_lookmeal" + "." + "meal_information" + "WHERE ID = (" + meals_id
-#
-#     sql = "select * from " + "ec2_lookmeal" + "." + mm + " " + "where id = " + meals_id
-#
-#     print("SQL Statement = " + cur.mogrify(sql, None))
-#
-#     res = cur.execute(sql)
-#     res = cur.fetchall()
-#
-#     conn.close()
-#
-#     return res
-
 def get_all( ):
 
     conn = _get_db_connection()
@@ -140,40 +119,6 @@ def add_meals(id, creator, location, restaurant, max_number, current_number):   
 
     return res
 
-# def add_meals(db_schema, table_name, tasks):       #添加饭局信息
-#     print(tasks)
-#     id = tasks["id"]
-#     name = tasks["name"]
-#     addr = tasks["addr"]
-#     rest = tasks["rest"]
-#     max = tasks["max"]
-#     cur = tasks["cur"]
-#
-#     conn = _get_db_connection()
-#     cur = conn.cursor()
-#
-#     sql = "INSERT INTO " + db_schema + "." + table_name + " (id, creator, location, restaurant, max_number, current_number) VALUES (%s, %s, %s, %s, %s, %s)"
-#     #sql = "Insert into " + db_schema + "." + table_name + " (ID, firstName, lastName, email, addressID) VALUES (" + id + ",'" + firstName + "','" + lastName + "','" + email + "'," + addressID + ")"
-#     print("SQL Statement = " + cur.mogrify(sql, None))
-#
-#     res = cur.execute(sql, (id, name, addr, rest, max, cur))
-#     conn.commit()
-#     conn.close()
-#     return res
-    # conn = _get_db_connection()
-    # cur = conn.cursor()
-    #
-    # sql = "INSERT INTO " + "ec2_lookmeal" + "." + "meal_information" + " (id,creator,location,restaurant,max_number,current_number) VALUES (%s,%s, %s, %s, %s, %s)"
-    #
-    # print("SQL Statement = " + cur.mogrify(sql, None))
-    #
-    # res = cur.execute(sql,(id, creator, location, restaurant, max_number, current_number))
-    # res = cur.fetchall()
-    #
-    # conn.commit()
-    # conn.close()
-    #
-    # return res
 
 def meals_modificate_add(meals_id, participant):       #添加饭局信息,使meals_information对应《meals_id>的current_number - 1，然后make_team里面根据<meals_id> <participant>增加一个人
     conn = _get_db_connection()
@@ -301,23 +246,34 @@ def get_mealsfromid(db_schema, table_name, meals_id):
 
     return res
 
-# def get_mealsfromid(meals_id):
-#
-#     conn = _get_db_connection()
-#     cur = conn.cursor()
-#
-#     mm =  "meal_information"
-#     # print(meals_id)
-#
-#     # sql = "select * from " + "ec2_lookmeal" + "." + "meal_information" + "WHERE ID = (" + meals_id
-#
-#     sql = "select * from " + "ec2_lookmeal" + "." + mm + " " + "where id = " + meals_id
-#
-#     print("SQL Statement = " + cur.mogrify(sql, None))
-#
-#     res = cur.execute(sql)
-#     res = cur.fetchall()
-#
-#     conn.close()
-#
-#     return res
+def participant_take_meal(db_schema, table_name, participant_id):
+    conn = _get_db_connection()
+    cur = conn.cursor()
+
+    sql = "select * from " + db_schema + "." + table_name + " where participant = " + participant_id
+    print(sql)
+    print("SQL Statement = " + cur.mogrify(sql, None))
+
+    res = cur.execute(sql)
+    res = cur.fetchall()
+    print(res)
+
+    conn.close()
+
+    return res
+
+def creator_create_meal(db_schema, table_name, creator_id):
+    conn = _get_db_connection()
+    cur = conn.cursor()
+
+    sql = "select * from " + db_schema + "." + table_name + " where creator = " + creator_id
+    print(sql)
+    print("SQL Statement = " + cur.mogrify(sql, None))
+
+    res = cur.execute(sql)
+    res = cur.fetchall()
+    print(res)
+
+    conn.close()
+
+    return res

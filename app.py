@@ -53,40 +53,10 @@ CORS(app)
 
 # -----------------------------------------------------------------------------------
 
-# @app.route('/trytemplate')
-# def try_template():
-#     # data = request.form
-#     # tasks = {
-#     #     'ID': data.get('ID'),
-#     #     'firstName': data.get('firstName'),
-#     #     'lastName': data.get('lastName'),
-#     #     'email': data.get('email'),
-#     #     'addressID': data.get('addressID')
-#     # }
-#
-#     #
-#     # if tasks["ID"] is None or tasks["firstName"] is None or tasks["lastName"] is None or tasks["email"] is None or \
-#     #         tasks["addressID"] is None:
-#     #     rsp = Response(json.dumps(None), status=400, content_type="application/json")
-#     # else:
-#     #     res = d_service.update_users("UserResource", "User", tasks)
-#     #     rsp = Response(json.dumps(res, default=str), status=201, content_type="application/json")
-#     # return rsp
-#
-#     return render_template('trytemplate.html', **context)
-
-
 @app.route('/')
 def hello_world():
     return '<u>Hello World!</u>'
 
-#
-# @app.route('/sss/meals')  ####show所有的meals
-# def getsss_by_prefix():
-#     db_schema = "ec2_lookmeal"
-#     res = d_service.get_all()
-#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
-#     return rsp
 
 
 @app.route('/api/meals', methods=["GET"])
@@ -105,14 +75,26 @@ def get_meals():
         rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
 
+@app.route('/api/participant_take_which_meal', methods=["GET"])
+def participan_take_which_meal():
+    participant_id = request.args.get('participant_id')
+    res = None
 
-# @app.route('/meals/delete/<meals_id>', methods = ["GET"])         #####根据meals_id查找
-# def delete_meals(meals_id):
-#     res = d_service.meals_delete_id(meals_id)
-#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
-#     return rsp
+    res = d_service.participant_take_meal("ec2_lookmeal", "make_team", participant_id)
+    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+    return rsp
 
-@app.route('/api/meals/delete', methods=["POST"])         #####根据meals_id查找
+@app.route('/api/creator_create_which_meal', methods=["GET"])
+def creator_create_which_meal():
+    creator_id = request.args.get('creator_id')
+    res = None
+
+    res = d_service.creator_create_meal("ec2_lookmeal", "meal_information", creator_id)
+    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+    return rsp
+
+
+@app.route('/api/meals/delete', methods=["DELETE"])         #####根据meals_id删除
 def delete_meals():
     if not request.form['id']:
         raise Exception("[add_meals] no meals_id")
@@ -142,45 +124,6 @@ def add_meals():
 
     rsp = Response(json.dumps(res, default=str), status=201, content_type="application/json")
     return rsp
-    # # print(111)
-    # # data = request.form
-    # data = request.form
-    # print(data)
-    # print(data[id])
-    # print(data['name'])
-    # print(data['addr'])
-    #
-    # tasks = {
-    #     'id': data.get('id'),
-    #     'name': data.get('name'),
-    #     'addr': data.get('addr'),
-    #     'rest': data.get('rest'),
-    #     'max': data.get('max'),
-    #     'cur': data.get('cur')
-    # }
-    # print(tasks)
-    # if tasks["id"] is None or tasks["name"] is None or tasks["addr"] is None or tasks["rest"] is None or \
-    #         tasks["max"] is None or tasks["cur"] is None:
-    #     rsp = Response(json.dumps(None), status=400, content_type="application/json")
-    # else:
-    #     res = d_service.update_users("ec2_lookmeal", "meal_information", tasks)
-    #     rsp = Response(json.dumps(res, default=str), status=201, content_type="application/json")
-    # return rsp
-
-
-
-# @app.route('/meals/add/<id>/<creator>/<location>/<restaurant>/<max_number>/<current_number>', methods = ["POST"])         #####添加meals信息    这里是硬编码
-# def add_meals(id, creator, location, restaurant, max_number, current_number):
-#     res = d_service.add_meals(id, creator, location, restaurant, max_number, current_number)
-#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
-#     return rsp
-#
-
-# @app.route('/meals_modificate/add/<meals_id>/<participant>', methods = ["POST"])         #####meals_modification join 一个人choose to join the meal
-# def meals_modificate1(meals_id, participant):
-#     res = d_service.meals_modificate_add(meals_id, participant)
-#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
-#     return rsp
 
 
 @app.route('/api/meals_modificate/add', methods = ["POST"])         #####meals_modification join 一个人choose to join the meal
@@ -206,14 +149,6 @@ def meals_modificate1():
 #     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
 #     return rsp
 
-# @app.route('/meals/delete', methods = ["DELETE"])         #####根据meals_id查找
-# def delete_meals():
-#     if not request.form['id']:
-#         raise Exception("[add_meals] no meals_id")
-#     res = d_service.meals_delete_id(request.form['id'])
-#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
-#     return rsp
-
 
 # @app.route('/meals_modificate/delete/<meals_id>/<participant>', methods = ["POST"])         #####meals_modification join 一个人choose to join the meal
 # def meals_modificate2(meals_id, participant):
@@ -228,20 +163,8 @@ def get_maketeam():
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     return rsp
 
-# @app.route('/api/meal_information', methods=["GET"])
-# def get_mealinformation():
-#     res = d_service.get_mealinformation("ec2_lookmeal", "meal_information")
-#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
-#     return rsp
 
-# @app.route('/meals/<meals_id>', methods = ["GET"])         #####根据meals_id查找
-# def get_meals_fromid(meals_id):
-#     res = d_service.get_mealsfromid(meals_id)
-#     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
-#     return rsp
-
-
-@app.route('/api/smartystreets', method=['GET'])                          ####smartystreet api
+@app.route('/api/smartystreets')                          ####smartystreet api
 def smartystreet():
     auth_id = "1d668e68-7682-f1e6-c470-117ff697e192"
     auth_token = "WBsZrn15pqaJmm2J7qAQ"
